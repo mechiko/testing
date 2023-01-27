@@ -6,12 +6,12 @@ isadmin = false
 name = 'Request UTM'
 timelayout = '2006-01-02T15:04:05-0700'
 utmhost = 'localhost'
-utmport = '8080'
+utmport = '3000'
 
 [application]
 console = true
-disconnected = true
-fsrarid = ''
+disconnected = false
+fsrarid = '010060696780'
 requestsendcount = 20
 requestsendtimer = 60
 scantimer = 30

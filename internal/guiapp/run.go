@@ -1,5 +1,5 @@
 // Package app configures and runs application.
-package cmdapp
+package guiapp
 
 import (
 	"fmt"
@@ -13,6 +13,8 @@ import (
 	"testing/internal/entity"
 	"testing/pkg/application"
 	"testing/pkg/events"
+	"testing/pkg/gui"
+	"testing/pkg/gui/views"
 	"testing/pkg/httpserver"
 	"testing/pkg/repo/sqlite3"
 	"testing/pkg/tasks"
@@ -111,9 +113,6 @@ func Run() int {
 				startTime := time.Now()
 				fmt.Printf("Получение документов заняло  %s секунд\n", time.Until(startTime).Abs())
 				scanTicker.Reset(time.Duration(scanTimer) * time.Second)
-
-				fmt.Printf("ПЕРЕЗАПУСК ПРИЛОЖЕНИЯ!!!\n")
-				app.Restart()
 			// Case to request send to utm
 			case <-requestTicker.C:
 				requestTicker.Stop()
@@ -133,6 +132,42 @@ func Run() int {
 				}
 			}
 		}
+	}()
+
+	// тут запуск оконного интерфейса
+	go func() {
+		defer app.GetRecovery().RecoverFmt("запуск оконного интерфейса")
+		fmt.Println("start go GUI!")
+		// GUI
+		gui := gui.NewGuiService("", app)
+		app.SetGuiService(gui)
+		// список действий тоже до создания окна наверное
+		app.DebugLog().Int("gui.Actions.len()", len(gui.Actions())).Send()
+
+		exitAction := walk.NewAction()
+		if err := exitAction.SetText("E&xit"); err != nil {
+			app.ErrorLog().AnErr(`exitAction.SetText("E&xit")`, err).Send()
+		}
+		exitAction.Triggered().Attach(Shutdown)
+		gui.AddAction(exitAction)
+		openAction := walk.NewAction()
+		if err := openAction.SetText("Открыть браузер"); err != nil {
+			app.ErrorLog().AnErr(`openAction.SetText("Открыть браузер")`, err).Send()
+		}
+		openAction.Triggered().Attach(Open)
+		gui.AddAction(openAction)
+		app.DebugLog().Int("gui.Actions.len()", len(gui.Actions())).Send()
+
+		// дерево меню инициализируем до создания главного окна
+		tm := views.CreateTreeMenu()
+		gui.SetTreeMenu(tm)
+		gui.NewMainWindow()
+		// вот теперь между созданием главного окна и запуском можем что то менять
+		mw := gui.GetMainWindow()
+		// mpmwi := gui.GetMPMW()
+		mw.SetVisible(true)
+		// Interrupt <- gui.Run()
+		entity.AppInterrupt <- gui.Run()
 	}()
 
 	// инициализируем монитор событий тут внешне по отношнеию к application

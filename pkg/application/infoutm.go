@@ -22,7 +22,7 @@ func getJson(url string, target interface{}) error {
 }
 
 func (a *applicationType) GetUtmInfo() (*entity.UTMInfo, error) {
-	cfg := a.Configuration
+	cfg := a.configuration
 	apiUrl := `http://` + cfg.UtmHost + ":" + cfg.UtmPort + "/api/info/list"
 	utmInfo := &entity.UTMInfo{
 		OwnerId: "",

@@ -4,8 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 
-	"testing/pkg/application"
-
 	"github.com/hashicorp/go-version"
 
 	// этот драйвер не зависит от CGO поэтому не проблема для 64 бит
@@ -37,12 +35,12 @@ var IndexDB string
 
 func (r *Repository) CheckVersionDb() (result error) {
 	var ver string
-	db, err := application.Get().GetDbService().Db()
+	db, err := r.App.GetDbService().Db()
 	if err != nil {
 		return fmt.Errorf("GetDbService().Db() %w", err)
 	}
 	defer func() {
-		application.Get().GetDbService().Close()
+		r.App.GetDbService().Close()
 		if err := db.Close(); err != nil {
 			result = fmt.Errorf("db.Close() %w", err)
 		}
@@ -60,12 +58,12 @@ func (r *Repository) CheckVersionDb() (result error) {
 // create() создаем БД сначала таблицу для опций, номер версии туда, и скрипт s.CreateDb
 func (r *Repository) create() error {
 	var result error
-	db, err := application.Get().GetDbService().Db()
+	db, err := r.App.GetDbService().Db()
 	if err != nil {
 		return fmt.Errorf("GetDbService().Db() %w", err)
 	}
 	defer func() {
-		application.Get().GetDbService().Close()
+		r.App.GetDbService().Close()
 		if err := db.Close(); err != nil {
 			result = fmt.Errorf("db.Close() %w", err)
 		}
@@ -88,12 +86,12 @@ func (r *Repository) create() error {
 // upgradeDb() обновляем БД и номер версии туда скрипт s.UpdateDb
 func (r *Repository) upgradeDb() error {
 	var result error
-	db, err := application.Get().GetDbService().Db()
+	db, err := r.App.GetDbService().Db()
 	if err != nil {
 		return fmt.Errorf("GetDbService().Db() %w", err)
 	}
 	defer func() {
-		application.Get().GetDbService().Close()
+		r.App.GetDbService().Close()
 		if err := db.Close(); err != nil {
 			result = fmt.Errorf("db.Close() %w", err)
 		}

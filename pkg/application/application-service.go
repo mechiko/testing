@@ -5,41 +5,41 @@ import (
 	"os"
 	"path/filepath"
 
-	"testing/pkg/config"
-
 	"github.com/rs/zerolog"
 	"github.com/skratchdot/open-golang/open"
 )
 
 const DateFormat = "2006.01.02"
 
+// это для повторной инициализации конфигурации повторное чтение данных
 func (a *applicationType) InitConfiguration() error {
-	defer RecoverFmtFunc("(a *application) InitConfiguration()")
+	defer a.GetRecovery().RecoverFmtFunc("(a *application) InitConfiguration()")
 	var err error
-	var cfg = a.Configuration
+	var cfg = a.configuration
 
-	a.pwd, err = os.Getwd()
-	if err != nil {
+	if a.pwd, err = os.Getwd(); err != nil {
 		return fmt.Errorf("InitConfiguration() %w", err)
 	}
-	config.GetConfig().Viper.Unmarshal(cfg)
-	if a.Configuration.Gui.Output == "" {
+	if err = a.GetConfig().Unmarshal(cfg); err != nil {
+		return fmt.Errorf("InitConfiguration() %w", err)
+	}
+	if a.configuration.Gui.Output == "" {
 		a.SetOutput("output")
 	} else {
-		a.SetOutput(a.Configuration.Gui.Output)
+		a.SetOutput(a.configuration.Gui.Output)
 	}
-	a.export = a.Configuration.Gui.Export
-	a.browser = a.Configuration.Browser
+	a.export = a.configuration.Gui.Export
+	a.browser = a.configuration.Browser
 	return nil
 }
 
 func (a *applicationType) SaveConfig() error {
-	vp, err := config.GetViper()
-	if err != nil {
-		return fmt.Errorf("GetViper() %w", err)
-	}
-	if err := vp.SafeWriteConfigAs("cccc.ccc"); err != nil {
-		return fmt.Errorf("SaveConfig() %w", err)
+	// vp, err := config.GetViper()
+	// if err != nil {
+	// 	return fmt.Errorf("GetViper() %w", err)
+	// }
+	if err := a.config.SaveAs("cccc.ccc"); err != nil {
+		return fmt.Errorf("application:SaveConfig() %w", err)
 	}
 	return nil
 }
@@ -94,7 +94,7 @@ func (a *applicationType) GetBaseUrl() string {
 	// var cfg = &entity.Configuration{}
 	// config.GetConfig().Viper.Unmarshal(cfg)
 
-	uri := "http://" + a.Configuration.Hostname + ":" + a.Configuration.HostPort
+	uri := "http://" + a.configuration.Hostname + ":" + a.configuration.HostPort
 	return uri
 }
 
@@ -109,20 +109,20 @@ func (a *applicationType) GetOutput() string {
 }
 
 func (a *applicationType) DebugLog() *zerolog.Event {
-	return a.Logger.Logger.Debug()
+	return a.logger.Logger.Debug()
 }
 
 func (a *applicationType) InfoLog() *zerolog.Event {
-	return a.Logger.Logger.Info()
+	return a.logger.Logger.Info()
 }
 
 // ErrorLog() *zerolog.Event
 func (a *applicationType) ErrorLog() *zerolog.Event {
-	return a.Logger.Logger.Error()
+	return a.logger.Logger.Error()
 }
 
 func (a *applicationType) OpenDir() {
-	defer RecoverFmtFunc("application OpenDir()")
+	defer a.GetRecovery().RecoverFmtFunc("application OpenDir()")
 
 	if a.output == "" {
 		return
@@ -133,7 +133,7 @@ func (a *applicationType) OpenDir() {
 }
 
 func (a *applicationType) Open(url string) {
-	defer RecoverFmtFunc("application Open()")
+	defer a.GetRecovery().RecoverFmtFunc("application Open()")
 
 	if url == "" {
 		return

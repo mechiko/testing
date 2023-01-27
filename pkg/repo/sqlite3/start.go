@@ -2,13 +2,11 @@ package sqlite3
 
 import (
 	"fmt"
-
-	"testing/pkg/application"
 )
 
 func (r *Repository) Start() error {
 	defer r.Recovery.RecoverLog("Start()")
-	dbService := application.Get().GetDbService()
+	dbService := r.App.GetDbService()
 	// создаем структуру БД если файл БД был только что создан
 	if !dbService.IsCreated() {
 		if err := r.create(); err != nil {

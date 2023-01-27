@@ -2,7 +2,6 @@ package sqlite3
 
 import (
 	"testing/internal/entity"
-	"testing/pkg/config"
 	"testing/pkg/repo/sqlite3/app_state"
 
 	"github.com/rs/zerolog"
@@ -17,21 +16,21 @@ import (
 )
 
 type Repository struct {
-	// App entity.App
+	App      entity.App
 	Db       entity.DbService
-	Logger   *zerolog.Logger
+	Logger   zerolog.Logger
 	Recovery entity.RecoverInterface
-	Config   config.Config
+	Config   entity.ConfigInterface
 }
 
 // NewMysqlArticleRepository will create an object that represent the article.Repository interface
 func NewRepository(a entity.App) entity.Repo {
 	return &Repository{
-		// App: a,
+		App:      a,
 		Db:       a.GetDbService(),
 		Logger:   a.GetLogger().Logger,
 		Recovery: a.GetRecovery(),
-		Config:   *a.GetConfig(),
+		Config:   a.GetConfig(),
 	}
 }
 

@@ -11,6 +11,7 @@ hostport = "3600"
 debug = true
 isadmin = false
 browser = ""
+timelayout = '2006-01-02T15:04:05-0700'
 
 [gui]
 limitforemptyfilter = 1000

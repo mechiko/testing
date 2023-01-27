@@ -9,39 +9,40 @@ import (
 
 // Interface -.
 type Interface interface {
-	Debug(message interface{}, args ...interface{})
-	Info(message string, args ...interface{})
-	Warn(message string, args ...interface{})
-	Error(message interface{}, args ...interface{})
-	Fatal(message interface{}, args ...interface{})
+	IDebug(message interface{}, args ...interface{})
+	IInfo(message string, args ...interface{})
+	IWarn(message string, args ...interface{})
+	IError(message interface{}, args ...interface{})
+	IFatal(message interface{}, args ...interface{})
+	Dispose()
 }
 
 // Debug -.
-func (l *Logger) Debug(message interface{}, args ...interface{}) {
+func (l *Logger) IDebug(message interface{}, args ...interface{}) {
 	l.msg("debug", message, args...)
 }
 
 // Info -.
-func (l *Logger) Info(message string, args ...interface{}) {
+func (l *Logger) IInfo(message string, args ...interface{}) {
 	l.log(message, args...)
 }
 
 // Warn -.
-func (l *Logger) Warn(message string, args ...interface{}) {
+func (l *Logger) IWarn(message string, args ...interface{}) {
 	l.log(message, args...)
 }
 
 // Error -.
-func (l *Logger) Error(message interface{}, args ...interface{}) {
+func (l *Logger) IError(message interface{}, args ...interface{}) {
 	if l.Logger.GetLevel() == zerolog.DebugLevel {
-		l.Debug(message, args...)
+		l.IDebug(message, args...)
 	}
 
 	l.msg("error", message, args...)
 }
 
 // Fatal -.
-func (l *Logger) Fatal(message interface{}, args ...interface{}) {
+func (l *Logger) LFatal(message interface{}, args ...interface{}) {
 	l.msg("fatal", message, args...)
 
 	os.Exit(1)
@@ -63,5 +64,15 @@ func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
 		l.log(msg, args...)
 	default:
 		l.log(fmt.Sprintf("%s message %v has unknown type %v", level, message, msg), args...)
+	}
+}
+
+// пытаемся закрыть файл лога
+func (l *Logger) Dispose() {
+	if l.logfile == nil {
+		return
+	}
+	if err := l.logfile.Close(); err != nil {
+		fmt.Printf("ошибка закрытия файла лога %s\n", err.Error())
 	}
 }

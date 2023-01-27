@@ -2,7 +2,6 @@ package application
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"runtime"
 	"time"
@@ -13,12 +12,12 @@ import (
 )
 
 type recoverInterface struct {
-	logger *zerolog.Logger
+	logger zerolog.Logger
 }
 
 var _ entity.RecoverInterface = &recoverInterface{}
 
-func NewRecoveryInterface(l *zerolog.Logger) entity.RecoverInterface {
+func NewRecoveryInterface(l zerolog.Logger) entity.RecoverInterface {
 	return &recoverInterface{
 		logger: l,
 	}
@@ -48,7 +47,7 @@ func (ri *recoverInterface) RecoverFunc(str string) {
 	// applicationInstance.Logger.Logger.Debug().Msg("RecoverFunc")
 	if r := recover(); r != nil {
 		err := fmt.Errorf("%v %v %v", str, time.Now(), r)
-		_ = ioutil.WriteFile("error.txt", []byte(err.Error()), 0644)
+		_ = os.WriteFile("error.txt", []byte(err.Error()), 0644)
 		ri.logger.Error().AnErr("RecoverFunc", err).Send()
 	}
 }
@@ -56,7 +55,7 @@ func (ri *recoverInterface) RecoverFunc(str string) {
 func (ri *recoverInterface) RecoverExit(str string) {
 	if r := recover(); r != nil {
 		err := fmt.Errorf("%v %v %v", str, time.Now(), r)
-		_ = ioutil.WriteFile("error.txt", []byte(err.Error()), 0644)
+		_ = os.WriteFile("error.txt", []byte(err.Error()), 0644)
 		ri.logger.Error().AnErr("RecoverExit", err).Send()
 		os.Exit(1)
 	}

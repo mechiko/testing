@@ -4,16 +4,15 @@ import (
 	"fmt"
 
 	"testing/internal/entity"
-	"testing/pkg/config"
 
 	"github.com/rs/zerolog"
 )
 
 type EvtMonitor struct {
 	Db          entity.DbService
-	Logger      *zerolog.Logger
+	Logger      zerolog.Logger
 	Recovery    entity.RecoverInterface
-	Config      config.Config
+	Config      entity.ConfigInterface
 	subscribers MapSubscriber
 	History     entity.History
 }
@@ -28,7 +27,7 @@ func NewMonitor(a entity.App) entity.EventMonitor {
 		Db:       a.GetDbService(),
 		Logger:   a.GetLogger().Logger,
 		Recovery: a.GetRecovery(),
-		Config:   *a.GetConfig(),
+		Config:   a.GetConfig(),
 		History:  a.GetHistory(),
 	}
 	monitor.subscribers = make(MapSubscriber)
