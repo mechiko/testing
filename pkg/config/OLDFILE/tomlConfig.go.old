@@ -1,0 +1,57 @@
+package config
+
+var TomlConfig []byte
+
+// var tomlConfig = []byte(`
+// # This is a TOML document.
+// name = "App merge declaration"
+// hostname = "localhost"
+// hostport = "3600"
+// debug = true
+// isadmin = false
+// browser = ""
+
+// [gui]
+// tray = false
+// hidemainwindow = false
+// output = "output"
+
+// [web]
+// limit = 1000
+// pager = 100
+// persistent = false
+// archive = true
+
+// [database]
+// timeout = 2
+// driver = "sqlite3"
+// connectionuri = "?cache=shared&mode=rwc"
+// dbname = "test.db"
+
+// [database1]
+// timeout = 2
+// driver = "sqlite3"
+// # mode rw without create
+// # mode rwc with create
+// connectionuri = "?cache=shared&mode=rw"
+// dbname = "00000000.db"
+
+// [logging]
+// filename = "log.log"
+// logtruncate = true
+// logfilenameecho = ""
+// nocolor = false
+// fileloggingenabled = true
+// rolling = false
+// consoleloggingenabled = true
+// directory = ""
+// maxsize = 10
+// maxbackups = 10
+// maxage = 10
+
+// [declaracia]
+// versform = "4.4"
+// naimprog = "AlcoDeclarant, версия 1.3.2.0"
+// nomform = "38"
+
+// `)

@@ -1,0 +1,45 @@
+browser = ''
+debug = false
+hostname = 'localhost'
+hostport = '3600'
+isadmin = false
+name = 'Request UTM'
+timelayout = '2006-01-02T15:04:05-0700'
+utmhost = 'localhost'
+utmport = '8080'
+
+[application]
+console = true
+disconnected = true
+fsrarid = ''
+requestsendcount = 20
+requestsendtimer = 60
+scantimer = 30
+scanutm = false
+tasktimer = 10
+utmstatetimer = 10
+
+[database]
+connectionuri = '?cache=shared&mode=rw'
+dbname = 'requests.db'
+driver = 'sqlite3'
+timeout = 2
+
+[gui]
+export = 'xlsx'
+hidemainwindow = false
+limitforemptyfilter = 1000
+nouseperiodforfilter = false
+output = 'output'
+tray = false
+
+[logging]
+directory = ''
+fileloggingenabled = true
+logfilename = 'logs.log'
+logfilenameecho = ''
+logtruncate = true
+maxage = 10
+maxbackups = 10
+maxsize = 10
+nocolor = false
