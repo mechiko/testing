@@ -5,5 +5,5 @@ goto End
 :Message
 git commit -m "%~1"
 :End
-git push -u origin main
-@rem git push origin
+@rem git push -u origin main
+git push origin
