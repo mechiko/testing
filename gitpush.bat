@@ -6,4 +6,4 @@ goto End
 git commit -m "%~1"
 :End
 @rem git push -u origin main
-git push origin
+git push origin main
